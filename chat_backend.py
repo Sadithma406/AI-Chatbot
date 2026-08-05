@@ -33,13 +33,19 @@ while True:
 
         predicted_intent = intent_classes[predicted_index]
 
-        reply = replies.get(
-            predicted_intent,
-            {}
-        ).get(
-            "reply",
-            "Sorry, I don't understand that."
-        )
+        # Add a confidence threshold for random inputs
+        CONFIDENCE_THRESHOLD = 0.5
+        if confidence < CONFIDENCE_THRESHOLD:
+            predicted_intent = "unknown"
+            reply = "I'm sorry, I didn't quite understand that. Could you please rephrase?"
+        else:
+            reply = replies.get(
+                predicted_intent,
+                {}
+            ).get(
+                "reply",
+                "Sorry, I don't understand that."
+            )
 
         result = {
             "intent": predicted_intent,
