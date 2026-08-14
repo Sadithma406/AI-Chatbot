@@ -1,6 +1,7 @@
 import json
 import numpy as np
 import tensorflow as tf
+import tensorflow_hub as hub
 import os
 
 from fastapi import FastAPI
@@ -8,22 +9,37 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-# Hide TensorFlow logs
+MODEL_PATH = "saved_model/intent_model.keras"
+CLASSES_PATH = "saved_model/classes.json"
+REPLIES_PATH = "saved_model/replies.json"
+
+USE_URL = "https://tfhub.dev/google/universal-sentence-encoder/4"
+
+CONFIDENCE_THRESHOLD = 0.25
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
 tf.get_logger().setLevel("ERROR")
 
-# Load TensorFlow model only once
-model = tf.keras.models.load_model("saved_model/intent_model.keras")
+print("Loading Universal Sentence Encoder...")
 
-with open("saved_model/classes.json", "r") as f:
+use = hub.load(USE_URL)
+
+print("Universal Sentence Encoder loaded successfully.")
+
+print("Loading intent classification model...")
+
+model = tf.keras.models.load_model( MODEL_PATH,compile=False)
+
+print("Intent model loaded successfully.")
+
+with open(CLASSES_PATH,"r",encoding="utf-8") as f:
     intent_classes = json.load(f)
 
-with open("saved_model/replies.json", "r") as f:
+
+with open(REPLIES_PATH,"r",encoding="utf-8") as f:
     replies = json.load(f)
 
-print("TensorFlow model loaded successfully.")
-
-# Create FastAPI app
 app = FastAPI()
 
 app.add_middleware(
@@ -34,31 +50,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Request body
 class ChatRequest(BaseModel):
     message: str
 
-# Chat endpoint
 @app.post("/api/chat")
 def chat(request: ChatRequest):
-
     user_input = request.message.strip().lower()
-
-    prediction = model.predict(
-        tf.constant([user_input]),
-        verbose=0
-    )
-
+    # Empty message
+    if not user_input:
+        return {
+            "intent": "unknown",
+            "reply": "Please enter a message.",
+            "confidence": 0
+  }
+    embedding = use([user_input])
+    embedding = embedding.numpy().astype(np.float32)
+    prediction = model.predict(embedding,verbose=0)
     predicted_index = int(np.argmax(prediction[0]))
     confidence = float(prediction[0][predicted_index])
-
     predicted_intent = intent_classes[predicted_index]
-
-    CONFIDENCE_THRESHOLD = 0.50
 
     if confidence < CONFIDENCE_THRESHOLD:
         predicted_intent = "unknown"
-        reply = "I'm sorry, I didn't quite understand that. Could you please rephrase?"
+        reply = (
+            "I'm sorry, I didn't quite understand that. "
+            "Could you please rephrase?"
+        )
     else:
         reply = replies.get(
             predicted_intent,
@@ -67,11 +84,12 @@ def chat(request: ChatRequest):
             "reply",
             "Sorry, I don't understand that."
         )
-
     return {
         "intent": predicted_intent,
         "reply": reply,
-        "confidence": round(confidence * 100, 2)
+        "confidence": round(
+            confidence * 100,
+            2
+        )
     }
-# Serve static files
-app.mount("/", StaticFiles(directory="public", html=True), name="public")
+app.mount("/",StaticFiles(directory="public",html=True),name="public")

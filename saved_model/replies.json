@@ -1,32 +1,32 @@
 {
-  "business_hours": {
-    "reply": "Our business hours are Monday to Friday from 9:00 AM to 6:00 PM."
-  },
-  "location": {
-    "reply": "Our office is located at our main business address. Let us know if you need directions."
-  },
-  "contact_support": {
-    "reply": "You can contact our support team via phone, email, or the contact form on our website."
-  },
-  "pricing": {
-    "reply": "Our pricing depends on the service you need. Please let us know your requirements for a quote."
-  },
-  "account_registration": {
-    "reply": "You can create an account by clicking the Sign Up button and completing the registration form."
-  },
-  "password_reset": {
-    "reply": "You can reset your password by selecting the 'Forgot Password' option on the login page."
-  },
-  "cancel_subscription": {
-    "reply": "You can cancel your subscription anytime from your account settings or by contacting support."
-  },
-  "refund_request": {
-    "reply": "Refund requests are reviewed according to our refund policy. Please contact support with your order details."
-  },
-  "order_status": {
-    "reply": "You can check your order status using the tracking link sent to your email after your purchase."
-  },
-  "greeting": {
-    "reply": "Hello! How can I help you today?"
-  }
+    "business_hours": {
+        "reply": "Our business hours are Monday to Friday from 9:00 AM to 6:00 PM."
+    },
+    "location": {
+        "reply": "Our office is located at our main business address. Let us know if you need directions."
+    },
+    "contact_support": {
+        "reply": "You can contact our support team via phone, email, or the contact form on our website."
+    },
+    "pricing": {
+        "reply": "Our pricing depends on the service you need. Please let us know your requirements for a quote."
+    },
+    "account_registration": {
+        "reply": "You can create an account by clicking the Sign Up button and completing the registration form."
+    },
+    "password_reset": {
+        "reply": "You can reset your password by selecting the 'Forgot Password' option on the login page."
+    },
+    "cancel_subscription": {
+        "reply": "You can cancel your subscription anytime from your account settings or by contacting support."
+    },
+    "refund_request": {
+        "reply": "Refund requests are reviewed according to our refund policy. Please contact support with your order details."
+    },
+    "order_status": {
+        "reply": "You can check your order status using the tracking link sent to your email after your purchase."
+    },
+    "greeting": {
+        "reply": "Hello! How can I help you today?"
+    }
 }
