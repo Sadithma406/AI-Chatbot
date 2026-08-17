@@ -3,7 +3,6 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
 import os
-
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
